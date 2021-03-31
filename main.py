@@ -3,8 +3,8 @@ import pygame
 import assets
 
 
-WIDTH = 360
-HEIGHT = 200
+WIDTH = 800
+HEIGHT = 600
 FPS = 30
 
 WHITE = (255, 255, 255)
@@ -12,29 +12,33 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 pygame.init()
 pygame.mixer.init()
-screen = pygame.display.set_mode((WIDTH,HEIGHT))
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Sai game")
 clock = pygame.time.Clock()
 
 
 class DynoAsset(pygame.sprite.Sprite):
     image = None
+
     def draw_image(self, string):
         x, y = (0, 0)
         for row in string:
             for character in row:
                 if character == "X":
-                    self.image.set_at((x,y), BLACK)
+                    self.image.set_at((x, y), BLACK)
                 x += 1
             y += 1
             x = 0
 
 # sprites
+
+
 class Player(DynoAsset):
     y = 0
+
     def __init__(self):
         DynoAsset.__init__(self)
-        self.image = pygame.Surface((20, 20), )
+        self.image = pygame.Surface((200, 20), )
         self.image.fill(WHITE)
         self.rect = self.image.get_rect()
         self.state = 1
@@ -54,9 +58,10 @@ class Player(DynoAsset):
     def kill_player(self):
         self.state = 0
 
-class Bird(DynoAsset):
 
+class Bird(DynoAsset):
     x = 100
+
     def __init__(self):
         DynoAsset.__init__(self)
 
@@ -75,13 +80,14 @@ class Bird(DynoAsset):
         elif self.state == 2:
             string = assets.BIRD_2
             self.state = 1
-
-
         self.draw_image(string)
+
+
 def make_bird(all_sprites):
-    a = random.randint(0 ,50)
+    a = random.randint(0, 50)
     if a < 3:
         all_sprites.add(Bird())
+
 
 def main():
     all_sprites = pygame.sprite.Group()
@@ -104,6 +110,7 @@ def main():
         all_sprites.draw(screen)
         pygame.display.flip()
         make_bird(all_sprites)
+
 
 if __name__ == "__main__":
     main()
