@@ -1,12 +1,14 @@
 import random
 import pygame
 import assets
-
+import math
 
 WIDTH = 800
 HEIGHT = 600
-FPS = 30
-
+FPS = 2
+JUMP_DURATION = 20
+MAX_JUMP_HEIGHT = 200
+MAX_JUMP_ARCH = 250
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
@@ -15,6 +17,13 @@ pygame.mixer.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Sai game")
 clock = pygame.time.Clock()
+
+
+def calc_jump_height(start_time, current_time):
+    time_in_jump = current_time - start_time
+    sin_of_time = math.sin((time_in_jump/JUMP_DURATION)*180)
+    height = sin_of_time*MAX_JUMP_ARCH
+    return min(MAX_JUMP_HEIGHT, int(height))
 
 
 class DynoAsset(pygame.sprite.Sprite):
@@ -34,7 +43,15 @@ class DynoAsset(pygame.sprite.Sprite):
 
 
 class Player(DynoAsset):
+    """
+    States:
+        * RUNNING
+        * JUMPING
+        * DEAD
+
+    """
     y = 0
+    state = "RUNNING"
 
     def __init__(self):
         DynoAsset.__init__(self)
@@ -44,14 +61,24 @@ class Player(DynoAsset):
         self.state = 1
 
         self.rect.center = (round(WIDTH/2), round(HEIGHT/2))
+
+
         self.frames = {
-            1: assets.CATUS,
-            2: assets.CATUS,
-            0: assets.CATUS,
-            3: assets.CATUS
+            "front": assets.DINO_FRONT_FOOT_UP,
+            "back": assets.DINO_BACK_FOOT_UP,
+            "dead": assets.DEAD_DINO,
+            "jump": assets.DINO
         }
 
     def update(self):
+        if self.state == "RUNNING":
+            # odd/even check?
+        elif self.state == "JUMPING":
+            # Location CHeck?
+        elif self.state == "DEAD":
+            # Show the dead image
+
+
         dino = self.frames[self.state]
         self.draw_image(dino)
 
@@ -97,6 +124,7 @@ def main():
     bird.rect.y = 0
     all_sprites.add(player)
     all_sprites.add(bird)
+    make_bird(all_sprites)
     running = True
     while running:
         clock.tick(FPS)
@@ -105,11 +133,11 @@ def main():
                 running = False
         # Update
         all_sprites.update()
+
         #  Draw / render
         screen.fill(WHITE)
         all_sprites.draw(screen)
         pygame.display.flip()
-        make_bird(all_sprites)
 
 
 if __name__ == "__main__":
